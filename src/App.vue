@@ -267,10 +267,52 @@ export default {
           };
         },
         methods: {
-          getDays() {
+          getDays(year, month, block_number) {
+            const dayOfWeek = ['日', '月', '火', '水', '木', '金', '土'];
+            let days = [];
+            let date = moment(`${year}-${month}-01`);
+            let num = date.daysInMonth();
+            for (let i = 0; i < num; i++) {
+              days.push({
+                day: date.date(),
+                dayOfWeek: dayOfWeek[date.day()],
+                block_number,
+              });
+              date.add(1, 'day');
+              block_number++;
+            }
+            return days;
           },
 
           getCalendar() {
+            let block_number = 0;
+            let days;
+            let start_month = moment(this.start_month);
+            let end_month = moment(this.end_month);
+            let between_month = end_month.diff(start_month, 'months');
+            for (let i = 0; i <= between_month; i++) {
+              days = this.getDays(
+                start_month.year(),
+                start_month.format('MM'),
+                block_number
+              );
+              this.calendars.push({
+                date: start_month.format('YYYY年MM月'),
+                year: start_month.year(),
+                month: start_month.month(),
+                start_block_number: block_number,
+                calendar: days.length,
+                days: days,
+              });
+              start_month.add(1, 'months');
+              block_number = days[days.length - 1].block_number;
+              block_number++;
+            }
+            return block_number;
+          },
+
+          todayPosition() {
+            this.$refs.calendar.scrollLeft = this.scrollDistance;
           },
 
           getWindowSize() {
@@ -278,8 +320,6 @@ export default {
             this.inner_height = window.innerHeight;
             this.task_width = this.$refs.task.offsetWidth;
             this.task_height = this.$refs.task.offsetHeight;
-          },
-          todayPosition() {
           },
 
         },
@@ -289,6 +329,7 @@ export default {
           this.$nextTick(() => {
             this.todayPosition();
           });
+          
         },
         computed: {
           calendarViewWidth() {
@@ -299,6 +340,13 @@ export default {
             return this.inner_height - this.task_height - 48 - 20;
           },
 
+          scrollDistance() {
+            let start_date = moment(this.start_month);
+            let between_days = this.today.diff(start_date, 'days');
+            return (
+              (between_days + 1) * this.block_size - this.calendarViewWidth / 2
+            );
+          },
 
           lists() {
             let lists = [];
