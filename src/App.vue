@@ -2,6 +2,12 @@
   <div id="app">
     <div id="form"></div>
     <div id="gantt-header" class="h-12 p-2">
+      <button
+        @click="addTask"
+        class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 text-xs ml-4"
+      >
+        <span class="font-bold text-xs"> タスクの追加 </span>
+      </button>
       <div>
         <div
           class="fixed top-0 left-0 right-0 flex justify-center mt-24 z-50"
@@ -320,6 +326,20 @@ export default {
             this.inner_height = window.innerHeight;
             this.task_width = this.$refs.task.offsetWidth;
             this.task_height = this.$refs.task.offsetHeight;
+          },
+
+          addTask() {
+            this.update_mode = false;
+            this.form = {};
+            this.show = true;
+          },
+
+          saveTask() {
+            this.form.id = Math.random();
+            this.tasks.push(this.form);
+            this.form = {};
+            this.show = false;
+            console.log(this.tasks);
           },
 
         },
