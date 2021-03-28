@@ -15,6 +15,8 @@
         >
           <div class="overlay" v-show="show" @click="show=false"></div>
           <div class="content" v-show="show">
+            <h2 class="font-bold" v-if="update_mode">タスクの更新</h2>
+            <h2 class="font-bold" v-else>タスクの追加</h2>
             <div class="my-4">
               <label class="text-xs">タスクのタイトル</label>
               <input
@@ -124,6 +126,12 @@
                 <div
                   class="border-r flex items-center font-bold w-48 text-sm pl-4"
                 >
+                  <button
+                    class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-1 text-xs mr-1"
+                    @click="editTask(list)"
+                  >
+                    編集
+                  </button>
                   {{list.name}}
                 </div>
 
@@ -232,9 +240,7 @@
 </template>
 
 <script>
-
 import moment from "moment";
-
 export default {
   name: 'App',
    data() {
@@ -268,7 +274,6 @@ export default {
               incharge_user: '',
               percentage: 0,
             },
-
             tasks: [],
           };
         },
@@ -289,7 +294,6 @@ export default {
             }
             return days;
           },
-
           getCalendar() {
             let block_number = 0;
             let days;
@@ -316,24 +320,20 @@ export default {
             }
             return block_number;
           },
-
-          todayPosition() {
-            this.$refs.calendar.scrollLeft = this.scrollDistance;
-          },
-
           getWindowSize() {
             this.inner_width = window.innerWidth;
             this.inner_height = window.innerHeight;
             this.task_width = this.$refs.task.offsetWidth;
             this.task_height = this.$refs.task.offsetHeight;
           },
-
+          todayPosition() {
+            this.$refs.calendar.scrollLeft = this.scrollDistance;
+          },
           addTask() {
             this.update_mode = false;
             this.form = {};
             this.show = true;
           },
-
           saveTask() {
             this.form.id = Math.random();
             this.tasks.push(this.form);
@@ -341,7 +341,6 @@ export default {
             this.show = false;
             console.log(this.tasks);
           },
-
           editTask(task) {
             this.update_mode = true;
             this.show = true;
@@ -364,7 +363,6 @@ export default {
             this.form = {};
             this.show = false;
           },
-
         },
         mounted() {
           this.getCalendar();
@@ -372,17 +370,14 @@ export default {
           this.$nextTick(() => {
             this.todayPosition();
           });
-          
         },
         computed: {
           calendarViewWidth() {
             return this.inner_width - this.task_width;
           },
-
           calendarViewHeight() {
             return this.inner_height - this.task_height - 48 - 20;
           },
-
           scrollDistance() {
             let start_date = moment(this.start_month);
             let between_days = this.today.diff(start_date, 'days');
@@ -390,7 +385,6 @@ export default {
               (between_days + 1) * this.block_size - this.calendarViewWidth / 2
             );
           },
-
           lists() {
             let lists = [];
             this.tasks.map((task) => {
@@ -398,7 +392,6 @@ export default {
             });
             return lists;
           },
-
         },
       };
 </script>
@@ -413,7 +406,6 @@ export default {
   background-color: gray;
   opacity: 0.5;
 }
-
 .content {
   background-color: white;
   position: relative;
