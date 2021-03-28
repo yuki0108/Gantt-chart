@@ -342,6 +342,29 @@ export default {
             console.log(this.tasks);
           },
 
+          editTask(task) {
+            this.update_mode = true;
+            this.show = true;
+            Object.assign(this.form, task);
+          },
+
+          updateTask(id) {
+            let task = this.tasks.find((task) => task.id === id);
+            Object.assign(task, this.form);
+            this.form = {};
+            this.show = false;
+          },
+
+          deleteTask(id) {
+            let delete_index;
+            this.tasks.map((task, index) => {
+              if (task.id === id) delete_index = index;
+            });
+            this.tasks.splice(delete_index, 1);
+            this.form = {};
+            this.show = false;
+          },
+
         },
         mounted() {
           this.getCalendar();
